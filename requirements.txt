@@ -1,0 +1,6 @@
+# Installation
+sudo apt install python3
+
+## Verify
+python3 -v
+pip -v
