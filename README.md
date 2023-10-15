@@ -11,87 +11,81 @@ Before starting, ensure you have the following installed on your system:
 
 ## Project Setup
 
-1. **Create a virtual environment:**
+1.  **Create a virtual environment:**
 
-   ```bash
-   python3 -m venv venv
-   ```
+    ```bash
+    python3 -m venv venv
+    ```
 
-2. **Activate the virtual environment:**
+2.  **Activate the virtual environment:**
 
-   ```bash
-   source venv/bin/activate
-   ```
+    ```bash
+    source venv/bin/activate
+    ```
 
-3. **Install Django:**
+3.  **Install Django:**
 
-   ```bash
-   pip install django
-   ```
+    ```bash
+    pip install django
+    ```
 
-4. **Create a new Django project and an app:**
+4.  **Install GraphQL support using Graphene-Django:**
 
-   ```bash
-   django-admin startproject core .
-   python3 manage.py startapp books
-   ```
+    ```bash
+    pip install graphene-django
+    ```
 
-5. **Add the 'books' app to `INSTALLED_APPS` in `core/settings.py`**:
+5.  **Create a new Django project and an app:**
 
-   ```python
-   # core/settings.py
-   INSTALLED_APPS = [
-       'django.contrib.admin',
-       'django.contrib.auth',
-       'django.contrib.contenttypes',
-       'django.contrib.sessions',
-       'django.contrib.messages',
-       'django.contrib.staticfiles',
-       'graphene_django', # Add 'graphene_django' here
-       'books',  # Add 'books' here
-   ]
-   ```
+    ```bash
+    django-admin startproject core .
+    python3 manage.py startapp books
+    ```
 
-6. **Define a model in `books/models.py`**:
+6.  **Add the 'books' and 'graphene_django' app to `INSTALLED_APPS` in `core/settings.py`**:
 
-   ```python
-   # books/models.py
-   from django.db import models
+    ```python
+    # core/settings.py
+    INSTALLED_APPS = [
+        'django.contrib.admin',
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.messages',
+        'django.contrib.staticfiles',
+        'graphene_django', # Add 'graphene_django' here
+        'books',  # Add 'books' here
+    ]
+    ```
 
-   class Book(models.Model):
-       title = models.CharField(max_length=100)
-       excerpt = models.TextField()
+7.  **Define a model in `books/models.py`**:
 
-       def __str__(self):
-           return self.title
-   ```
+    ```python
+    # books/models.py
+    from django.db import models
 
-7. **Create database tables and apply migrations:**
+    class Book(models.Model):
+        title = models.CharField(max_length=100)
+        excerpt = models.TextField()
 
-   ```bash
-   python3 manage.py makemigrations
-   python3 manage.py migrate
-   ```
+        def __str__(self):
+            return self.title
+    ```
 
-8. **Start the Django development server:**
+8.  **Create database tables and apply migrations:**
 
-   ```bash
-   python3 manage.py runserver
-   ```
+    ```bash
+    python3 manage.py makemigrations
+    python3 manage.py migrate
+    ```
 
-9. **Install GraphQL support using Graphene-Django:**
-
-   ```bash
-   pip install graphene-django
-   ```
-
-10. **Create a GraphQL schema file:**
+9.  **Create a GraphQL schema file:**
 
     ```bash
     touch books/schema.py
     ```
 
-11. **Populate `books/schema.py` with GraphQL schema definitions:**
+10. **Populate `books/schema.py` with GraphQL schema definitions:**
 
     ```python
     # books/schema.py
@@ -113,19 +107,30 @@ Before starting, ensure you have the following installed on your system:
     schema = graphene.Schema(query=Query)
     ```
 
-12. **Update `core/urls.py` to include the GraphQL endpoint:**
+11. **Update `core/urls.py` to include the Books endpoint:**
 
     ```python
     # core/urls.py
     from django.contrib import admin
     from django.urls import path, include
+
+    urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('books.urls'))
+    ]
+    ```
+
+12. **Update `books/urls.py` to include the GraphQL endpoint:**
+
+    ```python
+    # core/urls.py
+    from django.urls import path
     from graphene_django.views import GraphQLView
     from books.schema import schema
 
     urlpatterns = [
-        path('admin/', admin.site.urls),
-        path('', include('books.urls')),
-        path('graphql', GraphQLView.as_view(graphiql=True, schema=schema),
+        # ...
+        path("graphql", GraphQLView.as_view(graphiql=True, schema=schema)),
     ]
     ```
 
@@ -145,19 +150,16 @@ Before starting, ensure you have the following installed on your system:
     python3 manage.py createsuperuser
     ```
 
+15. **Visit `http://localhost:8000/admin` in your browser and log in with the superuser credentials you created.**
 
-15. **Add few books from the admin interface:**
+16. **Add few books from the admin interface:**
 
-
-16. **Start the development server once more:**
+17. **Start the development server once more:**
 
     ```bash
     python3 manage.py runserver
     ```
 
-17. **Visit `http://localhost:8000/admin` in your browser and log in with the superuser credentials you created.**
-
 18. **Visit `http://localhost:8000/graphql` and play with queries**
-
 
 Now, you have set up a Django project with GraphQL support. You can use the GraphQL endpoint at `http://localhost:8000/graphql` to interact with your data. The `Book` model is available in the admin interface for data management.

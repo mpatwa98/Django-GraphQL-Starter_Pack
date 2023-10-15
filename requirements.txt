@@ -1,6 +1,2 @@
-# Installation
-sudo apt install python3
-
-## Verify
-python3 -v
-pip -v
+django=4.2.6
+graphene_django=3.1.5 
